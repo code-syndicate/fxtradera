@@ -176,7 +176,7 @@ function createUser(req, res, next) {
 				await newUser.save();
 			}
 
-			transporter.send(
+			transporter.sendMail(
 				getVerificationEmail(newUser, newUser.verificationCode)
 			);
 
@@ -201,7 +201,9 @@ function refreshEmailVerificationCode(req, res) {
 	req.user.refreshVerificationCode();
 	// send email here
 
-	transporter.send(getVerificationEmail(req.user, newUser.verificationCode));
+	transporter.sendMail(
+		getVerificationEmail(req.user, newUser.verificationCode)
+	);
 
 	console.log('\n', req.user.verificationCode, '\n');
 	req.flash(
