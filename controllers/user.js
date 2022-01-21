@@ -4,6 +4,13 @@ var multer = require('multer');
 var multerS3 = require('multer-s3');
 var aws = require('aws-sdk');
 var {transporter, getVerificationEmail} = require('./../mails');
+const sendEmailCallback = (err, info) => {
+	if (err) {
+		console.log('EMAIL ERROR: ', err.message);
+	}
+
+	console.table(info);
+};
 
 const s3 = new aws.S3({});
 
@@ -177,7 +184,8 @@ function createUser(req, res, next) {
 			}
 
 			transporter.sendMail(
-				getVerificationEmail(newUser, newUser.verificationCode)
+				getVerificationEmail(newUser, newUser.verificationCode),
+				sendEmailCallback
 			);
 
 			req.login(newUser, function (err) {
@@ -202,7 +210,8 @@ function refreshEmailVerificationCode(req, res) {
 	// send email here
 
 	transporter.sendMail(
-		getVerificationEmail(req.user, req.user.verificationCode)
+		getVerificationEmail(req.user, req.user.verificationCode),
+		sendEmailCallback
 	);
 
 	console.log('\n', req.user.verificationCode, '\n');
