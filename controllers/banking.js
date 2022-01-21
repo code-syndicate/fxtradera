@@ -1,8 +1,40 @@
+require('dotenv').config();
 var {body, validationResult} = require('express-validator');
 var Notification1 = require('./../models/notification');
 var {Deposit1, Withdrawal1, AuthPin1} = require('./../models/transaction');
+var nodemailer = require('nodemailer');
+var mailConfig;
+if (process.env.NODE_ENV === 'production') {
+	// all emails are delivered to destination
+	mailConfig = {
+		port: 465,
+		host: 'mail.fxtraderra.com',
+		secure: true,
+		auth: {
+			username: process.env.EMAIL_USERNAME,
+			password: process.env.EMAIL_PASSWORD,
+		},
+	};
+} else {
+	// all emails are catched by ethereal.email
+	mailConfig = {
+		host: 'smtp.ethereal.email',
+		port: 587,
+		auth: {
+			user: 'ethereal.user@ethereal.email',
+			pass: 'verysecret',
+		},
+	};
+}
+let transporter = nodemailer.createTransport(mailConfig);
 
-
+transporter.verify(function (error, success) {
+	if (error) {
+		console.log('EMAIL ERROR : ', error);
+	} else {
+		console.log('EMAIL MESSAGING READY');
+	}
+});
 
 function servePageByUrl(req, res, next) {
 	const pageName = req.params.pageName;

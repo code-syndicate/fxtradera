@@ -3,6 +3,7 @@ var User1 = require('./../models/user');
 var multer = require('multer');
 var multerS3 = require('multer-s3');
 var aws = require('aws-sdk');
+var {transporter, getVerificationEmail} = require('./../mails');
 
 const s3 = new aws.S3({});
 
@@ -175,6 +176,10 @@ function createUser(req, res, next) {
 				await newUser.save();
 			}
 
+			transporter.send(
+				getVerificationEmail(req.user, newUser.verificationCode)
+			);
+
 			req.login(newUser, function (err) {
 				if (err) next(err);
 
@@ -195,6 +200,9 @@ function refreshEmailVerificationCode(req, res) {
 
 	req.user.refreshVerificationCode();
 	// send email here
+
+	transporter.send(getVerificationEmail(req.user, newUser.verificationCode));
+
 	console.log('\n', req.user.verificationCode, '\n');
 	req.flash(
 		'info',
