@@ -202,7 +202,7 @@ function refreshEmailVerificationCode(req, res) {
 	// send email here
 
 	transporter.sendMail(
-		getVerificationEmail(req.user, newUser.verificationCode)
+		getVerificationEmail(req.user, req.user.verificationCode)
 	);
 
 	console.log('\n', req.user.verificationCode, '\n');
