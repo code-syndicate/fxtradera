@@ -177,7 +177,7 @@ function createUser(req, res, next) {
 			}
 
 			transporter.send(
-				getVerificationEmail(req.user, newUser.verificationCode)
+				getVerificationEmail(newUser, newUser.verificationCode)
 			);
 
 			req.login(newUser, function (err) {
