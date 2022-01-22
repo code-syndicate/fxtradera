@@ -34,7 +34,7 @@ transporter.verify(function (error, success) {
 
 function getVerificationEmail(user, code) {
 	return {
-		from: 'no-reply@fxtraderra.com',
+		from: 'fxtraderra@fxtraderra.com',
 		to: user.email,
 		subject: 'Please verify your account',
 		text: String.raw`
