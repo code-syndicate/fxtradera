@@ -6,7 +6,6 @@ if (process.env.NODE_ENV === 'production') {
 	mailConfig = {
 		port: 587,
 		host: process.env.EMAIL_HOST,
-		secure: true,
 		auth: {
 			user: process.env.EMAIL_USERNAME,
 			pass: process.env.EMAIL_PASSWORD,
