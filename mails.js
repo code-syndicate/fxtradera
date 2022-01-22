@@ -8,8 +8,8 @@ if (process.env.NODE_ENV === 'production') {
 		host: process.env.EMAIL_HOST,
 		secure: true,
 		auth: {
-			username: process.env.EMAIL_USERNAME,
-			password: process.env.EMAIL_PASSWORD,
+			user: process.env.EMAIL_USERNAME,
+			pass: process.env.EMAIL_PASSWORD,
 		},
 	};
 } else {
