@@ -8,6 +8,7 @@ if (process.env.NODE_ENV === 'production') {
 		host: process.env.EMAIL_HOST,
 		secure: true,
 		auth: {
+			type: 'oauth2',
 			user: process.env.EMAIL_USERNAME,
 			pass: process.env.EMAIL_PASSWORD,
 		},
