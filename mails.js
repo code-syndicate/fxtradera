@@ -4,7 +4,7 @@ var mailConfig;
 if (process.env.NODE_ENV === 'production') {
 	// all emails are delivered to destination
 	mailConfig = {
-		port: 587,
+		port: 465,
 		host: process.env.EMAIL_HOST,
 		auth: {
 			user: process.env.EMAIL_USERNAME,
