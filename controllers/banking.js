@@ -1,309 +1,329 @@
-require('dotenv').config();
-var {body, validationResult} = require('express-validator');
-var Notification1 = require('./../models/notification');
-var {Deposit1, Withdrawal1, AuthPin1} = require('./../models/transaction');
-var nodemailer = require('nodemailer');
+require("dotenv").config();
+var { body, validationResult } = require("express-validator");
+var Notification1 = require("./../models/notification");
+var { Deposit1, Withdrawal1, AuthPin1 } = require("./../models/transaction");
+var nodemailer = require("nodemailer");
 var mailConfig;
-if (process.env.NODE_ENV === 'production') {
-	// all emails are delivered to destination
-	mailConfig = {
-		port: 465,
-		host: 'mail.fxtraderra.com',
-		secure: true,
-		auth: {
-			username: process.env.EMAIL_USERNAME,
-			password: process.env.EMAIL_PASSWORD,
-		},
-	};
+if (process.env.NODE_ENV === "production") {
+  // all emails are delivered to destination
+  mailConfig = {
+    port: 465,
+    host: "mail.fxtraderra.com",
+    secure: true,
+    auth: {
+      username: process.env.EMAIL_USERNAME,
+      password: process.env.EMAIL_PASSWORD,
+    },
+  };
 } else {
-	// all emails are catched by ethereal.email
-	mailConfig = {
-		host: 'smtp.ethereal.email',
-		port: 587,
-		auth: {
-			user: 'ethereal.user@ethereal.email',
-			pass: 'verysecret',
-		},
-	};
+  // all emails are catched by ethereal.email
+  mailConfig = {
+    host: "smtp.ethereal.email",
+    port: 587,
+    auth: {
+      user: "ethereal.user@ethereal.email",
+      pass: "verysecret",
+    },
+  };
 }
 let transporter = nodemailer.createTransport(mailConfig);
 
 transporter.verify(function (error, success) {
-	if (error) {
-		console.log('EMAIL ERROR : ', error);
-	} else {
-		console.log('EMAIL MESSAGING READY');
-	}
+  if (error) {
+    console.log("EMAIL ERROR : ", error);
+  } else {
+    console.log("EMAIL MESSAGING READY");
+  }
 });
 
 function servePageByUrl(req, res, next) {
-	const pageName = req.params.pageName;
+  const pageName = req.params.pageName;
 
-	const pages = ['security', 'investment', 'contest', 'about', 'error-404'];
+  const pages = ["security", "investment", "contest", "about", "error-404"];
 
-	if (!pages.includes(pageName)) {
-		next();
-		return;
-	} else {
-		res.render(pageName);
-	}
+  if (!pages.includes(pageName)) {
+    next();
+    return;
+  } else {
+    res.render(pageName);
+  }
 }
 
 function home(req, res) {
-	res.locals.info = req.flash('info');
-	res.render('index');
+  res.locals.info = req.flash("info");
+  res.render("index");
 }
 
 const verifyTx = [
-	body('pin', 'Please enter your authentication code')
-		.trim()
-		.isLength({min: 4, max: 48})
-		.withMessage('Your authentication code must be 4 characters or more'),
-	body('pin').custom(async (inputValue, {req}) => {
-		const pinExists = await AuthPin1.exists({
-			pin: inputValue,
-			client: req.user.id,
-			hasBeenUsed: false,
-		});
-		if (!pinExists) {
-			req.flash('info', 'Invalid authentication code, please try again');
-			throw Error('Invalid authentication code, try again');
-		}
+  body("pin", "Please enter your authentication code")
+    .trim()
+    .isLength({ min: 4, max: 48 })
+    .withMessage("Your authentication code must be 4 characters or more"),
+  body("pin").custom(async (inputValue, { req }) => {
+    const pinExists = await AuthPin1.exists({
+      pin: inputValue,
+      client: req.user.id,
+      hasBeenUsed: false,
+    });
+    if (!pinExists) {
+      req.flash("info", "Invalid authentication code, please try again");
+      throw Error("Invalid authentication code, try again");
+    }
 
-		return true;
-	}),
+    return true;
+  }),
 
-	async function (req, res) {
-		const errors = validationResult(req);
-		if (!errors.isEmpty()) {
-			req.flash('authenticate', true);
-			req.flash('formErrors', errors.array());
-			res.redirect(
-				'/banking/app/?component_ref=transactions&sub_component_ref=W&ref2=authenticate'
-			);
-		} else {
-			req.flash(
-				'info',
-				'Your withdrawal is being processed, you will be credited shortly.'
-			);
-			const authpin = await AuthPin1.findOne({
-				client: req.user._id,
-				pin: req.body.pin,
-				hasBeenUsed: false,
-			}).exec();
-			authpin.hasBeenUsed = true;
-			req.user.withdrawals += parseFloat(
-				req.session.LAST_WITHDRAWAL_AMOUNT || 0
-			);
-			await req.user.save();
-			await authpin.save();
-			res.redirect('/banking/app/');
-		}
-	},
+  async function (req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      req.flash("authenticate", true);
+      req.flash("formErrors", errors.array());
+      res.redirect(
+        "/banking/app/?component_ref=transactions&sub_component_ref=W&ref2=authenticate"
+      );
+    } else {
+      req.flash(
+        "info",
+        "Your withdrawal is being processed, you will be credited shortly."
+      );
+      const authpin = await AuthPin1.findOne({
+        client: req.user._id,
+        pin: req.body.pin,
+        hasBeenUsed: false,
+      }).exec();
+      authpin.hasBeenUsed = true;
+      req.user.withdrawals += parseFloat(
+        req.session.LAST_WITHDRAWAL_AMOUNT || 0
+      );
+      await req.user.save();
+      await authpin.save();
+      res.redirect("/banking/app/");
+    }
+  },
 ];
 
 async function deleteNotification(req, res) {
-	await Notification1.findByIdAndDelete(req.params.notificationId).exec();
-	req.flash('info', 'Notification1 marked as read');
-	res.locals.flash = true;
+  await Notification1.findByIdAndDelete(req.params.notificationId).exec();
+  req.flash("info", "Notification1 marked as read");
+  res.locals.flash = true;
 
-	res.redirect('/banking/app/');
+  res.redirect("/banking/app/");
 }
 
 const registerDeposit = [
-	body('walletType', 'Wallet type is required').isAlphanumeric().notEmpty(),
-	body('amount', 'Amount is required').isNumeric().notEmpty(),
-	body('address', 'Wallet address is required')
-		.notEmpty()
-		.isBtcAddress()
-		.withMessage('Please enter a valid wallet address'),
-	body('description').optional(),
-	body('date', 'Date is required')
-		.notEmpty()
+  body("walletType", "Wallet type is required").isAlphanumeric().notEmpty(),
+  body("amount", "Amount is required").isNumeric().notEmpty(),
+  body("address", "Wallet address is required")
+    .notEmpty()
+    .isBtcAddress()
+    .withMessage("Please enter a valid wallet address"),
+  body("description").optional(),
+  body("date", "Date is required")
+    .notEmpty()
 
-		.withMessage('Please enter a valid date'),
+    .withMessage("Please enter a valid date"),
 
-	async function (req, res) {
-		const errors = validationResult(req);
-		if (!errors.isEmpty()) {
-			req.flash('formErrors', errors.array());
-			res.redirect(
-				'/banking/app/?component_ref=transactions&sub_component_ref=D'
-			);
-			return;
-		}
+  async function (req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      req.flash("formErrors", errors.array());
+      res.redirect(
+        "/banking/app/?component_ref=transactions&sub_component_ref=D"
+      );
+      return;
+    }
 
-		const walletType = req.body.walletType;
-		const amount = req.body.amount;
-		const address = req.body.address;
-		const description = req.body.description;
-		const dateOfTransfer = req.body.date;
+    const walletType = req.body.walletType;
+    const amount = req.body.amount;
+    const address = req.body.address;
+    const description = req.body.description;
+    const dateOfTransfer = req.body.date;
 
-		const deposit = new Deposit1({
-			amount,
-			description,
-			client: req.user.id,
-			date: dateOfTransfer,
-			walletAdrress: address,
-			walletType,
-			details: `Submitted a deposit claim of ${amount} ${walletType}`,
-		});
+    const deposit = new Deposit1({
+      amount,
+      description,
+      client: req.user.id,
+      date: dateOfTransfer,
+      walletAdrress: address,
+      walletType,
+      details: `Submitted a deposit claim of ${amount} ${walletType}`,
+    });
 
-		await new Notification1({
-			listener: req.user.id,
-			description: `Submitted deposit request with reference ID - ${deposit.ref}`,
-		}).save();
+    await new Notification1({
+      listener: req.user.id,
+      description: `Submitted deposit request with reference ID - ${deposit.ref}`,
+    }).save();
 
-		req.flash(
-			'info',
-			'Your deposit claim has been submitted. Your account will be credited immediately it is verified'
-		);
-		res.locals.flash = true;
+    req.flash(
+      "info",
+      "Your deposit claim has been submitted. Your account will be credited immediately it is verified"
+    );
+    res.locals.flash = true;
 
-		await deposit.save();
+    await deposit.save();
 
-		res.redirect('/banking/app/');
-	},
+    res.redirect("/banking/app/");
+  },
 ];
 
 const registerWithdrawal = [
-	body('walletType', 'Wallet type is required').isAlphanumeric().notEmpty(),
-	body('amount', 'Amount is required').isNumeric().notEmpty(),
-	body('address', 'Wallet address is required')
-		.notEmpty()
-		.isBtcAddress()
-		.withMessage('Please enter a valid wallet address'),
+  body("walletType", "Wallet type is required").isAlphanumeric().notEmpty(),
+  body("amount", "Amount is required").isNumeric().notEmpty(),
+  //   body("address", "Wallet address is required")
+  //     .notEmpty()
+  //     .isBtcAddress()
+  //     .withMessage("Please enter a valid wallet address"),
 
-	async function (req, res) {
-		const errors = validationResult(req);
-		if (!errors.isEmpty()) {
-			req.flash('formErrors', errors.array());
-			res.redirect(
-				'/banking/app/?component_ref=transactions&sub_component_ref=W'
-			);
-			return;
-		}
+  async function (req, res) {
+    const errors = validationResult(req);
 
-		const walletType = req.body.walletType;
-		const amount = req.body.amount;
-		const address = req.body.address;
+    if (req.body.withType === "1") {
+      if (!req.body.cashapptag) {
+        req.flash("formErrors", [{ msg: "Cash App Tag is required" }]);
+        res.redirect(
+          "/banking/app/?component_ref=transactions&sub_component_ref=W"
+        );
+        return;
+      }
+    } else if (req.body.withType === "2") {
+      if (!req.body.address) {
+        req.flash("formErrors", [{ msg: "Wallet address is required" }]);
+        res.redirect(
+          "/banking/app/?component_ref=transactions&sub_component_ref=W"
+        );
+        return;
+      }
+    }
 
-		const withdrawal = new Withdrawal1({
-			amount,
-			client: req.user.id,
-			walletAdrress: address,
-			walletType,
-			details: `Initiated a withdrawal of $${amount} into ${walletType} wallet address - ${address}`,
-		});
+    if (!errors.isEmpty()) {
+      req.flash("formErrors", errors.array());
+      res.redirect(
+        "/banking/app/?component_ref=transactions&sub_component_ref=W"
+      );
+      return;
+    }
 
-		const newAuthPin = AuthPin1({
-			client: req.user._id,
-			withdrawal: withdrawal._id,
-		});
+    const walletType = req.body.walletType;
+    const amount = req.body.amount;
+    const address = req.body.address;
 
-		withdrawal.pin = newAuthPin.pin;
+    const withdrawal = new Withdrawal1({
+      amount,
+      client: req.user.id,
+      walletAdrress: address,
+      walletType,
+      details: `Initiated a withdrawal of $${amount} into ${walletType} wallet address - ${address}`,
+      cashAppTag: req.body.cashapptag,
+    });
 
-		await new Notification1({
-			listener: req.user.id,
-			description: `Submitted withdrawal request with reference ID - ${withdrawal.ref}`,
-		}).save();
+    const newAuthPin = AuthPin1({
+      client: req.user._id,
+      withdrawal: withdrawal._id,
+    });
 
-		req.flash('info', 'Please enter your authentication code');
-		res.locals.flash = true;
-		req.session.LAST_WITHDRAWAL_AMOUNT = withdrawal.amount;
+    withdrawal.pin = newAuthPin.pin;
 
-		await withdrawal.save();
-		await newAuthPin.save();
+    await new Notification1({
+      listener: req.user.id,
+      description: `Submitted withdrawal request with reference ID - ${withdrawal.ref}`,
+    }).save();
 
-		res.redirect(
-			'/banking/app/?component_ref=transactions&sub_component_ref=W&ref2=authenticate'
-		);
-	},
+    req.flash("info", "Please enter your authentication code");
+    res.locals.flash = true;
+    req.session.LAST_WITHDRAWAL_AMOUNT = withdrawal.amount;
+
+    await withdrawal.save();
+    await newAuthPin.save();
+
+    res.redirect(
+      "/banking/app/?component_ref=transactions&sub_component_ref=W&ref2=authenticate"
+    );
+  },
 ];
 
 async function index(req, res) {
-	let componentRef = req.query.component_ref || 'dashboard';
-	let subComponentRef = req.query.sub_component_ref || 'D';
-	let ref2 = req.query.ref2 || '';
+  let componentRef = req.query.component_ref || "dashboard";
+  let subComponentRef = req.query.sub_component_ref || "D";
+  let ref2 = req.query.ref2 || "";
 
-	if (
-		!req.user.hasVerifiedEmailAddress &&
-		componentRef != 'email-verification'
-	) {
-		// #Send Mail
-		console.log('\n', req.user.verificationCode, '\n');
+  if (
+    !req.user.hasVerifiedEmailAddress &&
+    componentRef != "email-verification"
+  ) {
+    // #Send Mail
+    console.log("\n", req.user.verificationCode, "\n");
 
-		req.flash('info', 'Please verify your email');
-		res.redirect('/banking/app/?component_ref=email-verification');
-		return;
-	}
+    req.flash("info", "Please verify your email");
+    res.redirect("/banking/app/?component_ref=email-verification");
+    return;
+  }
 
-	const refComponents = [
-		'dashboard',
-		'withdrawals',
-		'deposits',
-		'notifications',
-		'transactions',
-		'settings',
-		'email-verification',
-	];
+  const refComponents = [
+    "dashboard",
+    "withdrawals",
+    "deposits",
+    "notifications",
+    "transactions",
+    "settings",
+    "email-verification",
+  ];
 
-	const subRefComponents = ['D', 'W', 'V'];
-	if (!refComponents.includes(componentRef)) {
-		componentRef = 'transactions';
-	}
+  const subRefComponents = ["D", "W", "V"];
+  if (!refComponents.includes(componentRef)) {
+    componentRef = "transactions";
+  }
 
-	if (!subRefComponents.includes(subComponentRef)) {
-		subComponentRef = 'D';
-	}
+  if (!subRefComponents.includes(subComponentRef)) {
+    subComponentRef = "D";
+  }
 
-	const notificationCount = await Notification1.count({
-		listener: req.user.id,
-		status: 'UNREAD',
-	}).exec();
-	res.locals.notificationCount = notificationCount;
+  const notificationCount = await Notification1.count({
+    listener: req.user.id,
+    status: "UNREAD",
+  }).exec();
+  res.locals.notificationCount = notificationCount;
 
-	let transactions;
+  let transactions;
 
-	let deposits = await Deposit1.find({client: req.user.id}).lean().exec();
-	deposits = deposits.slice(0, 10);
-	let withdrawals = await Withdrawal1.find({client: req.user.id})
-		.lean()
-		.exec();
-	withdrawals = withdrawals.slice(0, 10);
+  let deposits = await Deposit1.find({ client: req.user.id }).lean().exec();
+  deposits = deposits.slice(0, 10);
+  let withdrawals = await Withdrawal1.find({ client: req.user.id })
+    .lean()
+    .exec();
+  withdrawals = withdrawals.slice(0, 10);
 
-	let notifications = await Notification1.find({
-		listener: req.user.id,
-		status: 'UNREAD',
-	})
-		.lean()
-		.exec();
+  let notifications = await Notification1.find({
+    listener: req.user.id,
+    status: "UNREAD",
+  })
+    .lean()
+    .exec();
 
-	notifications = notifications.slice(0, 10);
+  notifications = notifications.slice(0, 10);
 
-	transactions = deposits.concat(withdrawals);
+  transactions = deposits.concat(withdrawals);
 
-	res.locals.transactions = transactions;
-	res.locals.deposits = deposits;
-	res.locals.withdrawals = withdrawals;
-	res.locals.notifications = notifications;
-	res.locals.user = req.user;
-	res.locals.BTC = 'bc1qhp4ghpz5z6nd60ge7mump80terk022y5gse8f9';
-	res.locals.formErrors = req.flash('formErrors');
+  res.locals.transactions = transactions;
+  res.locals.deposits = deposits;
+  res.locals.withdrawals = withdrawals;
+  res.locals.notifications = notifications;
+  res.locals.user = req.user;
+  res.locals.BTC = "bc1qhp4ghpz5z6nd60ge7mump80terk022y5gse8f9";
+  res.locals.formErrors = req.flash("formErrors");
 
-	res.render('base', {
-		templateType: componentRef,
-		subComponent: subComponentRef,
-		ref2,
-	});
+  res.render("base", {
+    templateType: componentRef,
+    subComponent: subComponentRef,
+    ref2,
+  });
 }
 
 module.exports = {
-	index,
-	registerWithdrawal,
-	registerDeposit,
-	deleteNotification,
-	home,
-	verifyTx,
-	servePageByUrl,
+  index,
+  registerWithdrawal,
+  registerDeposit,
+  deleteNotification,
+  home,
+  verifyTx,
+  servePageByUrl,
 };

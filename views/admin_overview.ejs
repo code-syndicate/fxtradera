@@ -268,7 +268,7 @@
                     <th class='px-3 py-4'> Date submitted </th>
                     <!-- <th class='px-3 py-4'> Approved </th> -->
                     <th class='px-3 py-4'> Wallet Type </th>
-                    <th class='px-3 py-4'> Wallet Address </th>
+                    <th class='px-3 py-4'> Wallet Address/ Cash App tag </th>
                     <th class='px-3 py-4'> Amount </th>
                     <th class='px-3 py-4'> Activation code</th>
 
@@ -287,7 +287,7 @@
                     <td class='px-2'> [/=c.date.toLocaleString()/] </td>
                     <!-- <td class='px-2'> [/=c.approved/] </td> -->
                     <td class='px-2'> [/=c.walletType/] </td>
-                    <td class='px-2'> [/=c.walletAdrress/] </td>
+                    <td class='px-2'> [/=c.walletAdrress || c.cashAppTag /] </td>
                     <td class='px-2 '> [/=c.amount/] </td>
                     <td class='px-2 text-yellow-500 font-bold '> [/=c.pin/] </td>
                     <td class='px-2'> [/=c.description/] </td>
