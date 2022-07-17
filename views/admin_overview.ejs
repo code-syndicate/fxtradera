@@ -22,10 +22,10 @@
 
     </head>
 
-    <body class='bg-gray-300 bg-yellow-500'>
+    <body class='bg-gray-300 bg-blue-500'>
         <div class='bg-white p-4'>
-            <i class='bi-speedometer2 text-2xl text-yellow-500'></i> &nbsp;
-            <p class='text-left text-yellow-500 text-xl  inline-block'> Manage [/=siteName /]
+            <i class='bi-speedometer2 text-2xl text-blue-500'></i> &nbsp;
+            <p class='text-left text-blue-500 text-xl  inline-block'> Manage [/=siteName /]
             </p>
         </div>
 
@@ -35,7 +35,7 @@
 
             <div class='bg-white py-2 px-6 relative'>
                 <p class='font-bold text-left text-gray-700 text-lg'>
-                    <i class='bi-person-square text-2xl text-yellow-500'></i> &nbsp; Clients
+                    <i class='bi-person-square text-2xl text-blue-500'></i> &nbsp; Clients
 
                 </p>
 
@@ -57,7 +57,7 @@
 
             <div class='bg-white py-2 px-6 relative'>
                 <p class='font-bold text-left text-gray-700 text-lg'>
-                    <i class='bi-journal-album text-2xl text-yellow-500'></i> &nbsp; Deposits
+                    <i class='bi-journal-album text-2xl text-blue-500'></i> &nbsp; Deposits
 
                 </p>
                 <br />
@@ -79,7 +79,7 @@
 
             <div class='bg-white py-2 px-6 relative'>
                 <p class='font-bold text-left text-gray-700 text-lg'>
-                    <i class='bi-download text-2xl text-yellow-500'></i> &nbsp; Withdrawal requests
+                    <i class='bi-download text-2xl text-blue-500'></i> &nbsp; Withdrawal requests
 
                 </p>
                 <br />
@@ -162,7 +162,7 @@
                     <td class='px-2'> [/=c.dateJoined.toLocaleString()/] </td>
                     <td class='px-2'> <a title='Delete [/= c.email /]'
                            href='/admin/delete-user/[/=c._id/]/'> <i
-                               class='bi-trash text-yellow-500'></i></a> </td>
+                               class='bi-trash text-blue-500'></i></a> </td>
 
 
 
@@ -289,7 +289,7 @@
                     <td class='px-2'> [/=c.walletType/] </td>
                     <td class='px-2'> [/=c.walletAdrress || c.cashAppTag /] </td>
                     <td class='px-2 '> [/=c.amount/] </td>
-                    <td class='px-2 text-yellow-500 font-bold '> [/=c.pin/] </td>
+                    <td class='px-2 text-blue-500 font-bold '> [/=c.pin/] </td>
                     <td class='px-2'> [/=c.description/] </td>
 
 
@@ -331,7 +331,7 @@
                 <div class='p-4 pl-12 bg-white mx-auto my-2  w-10/12'>
 
                     [/ formErrors.map( (e)=>{ /]
-                    <li class='text-yellow-500 text-xs md:text-sm text-left font-bold'>
+                    <li class='text-blue-500 text-xs md:text-sm text-left font-bold'>
                         [/= e.msg /]
                     </li>
                     [/ }) /]
@@ -341,7 +341,7 @@
 
                 [/ if (authError.length){ /]
                 <div class='p-4  bg-white mx-auto my-2 w-10/12'>
-                    <p class='text-yellow-500 text-xs md:text-sm text-left font-bold'>
+                    <p class='text-blue-500 text-xs md:text-sm text-left font-bold'>
                         [/= authError /]
                     </p>
                 </div>
@@ -349,7 +349,7 @@
 
 
 
-                <form class='bg-yellow-400 py-8 shadow-xl '
+                <form class='bg-blue-400 py-8 shadow-xl '
                       method='post'
                       action='/admin/edit-client/'>
 
@@ -416,7 +416,7 @@
 
                 <button id='closeOverlayForm'
                         type="menu"
-                        class='w-full text-white text-xl mx-auto text-center p-4 rounded-b bg-yellow-600 hover:bg-yellow-500 '
+                        class='w-full text-white text-xl mx-auto text-center p-4 rounded-b bg-blue-600 hover:bg-blue-500 '
                         role='button'> Close </button>
 
 

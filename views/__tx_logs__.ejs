@@ -1,49 +1,37 @@
-<p class='text-center md:text-left px-2 py-12 text-base md:text-2xl font-bold text-white'>
-    Recent transactions </p>
+<p
+  class="text-center md:text-left px-2 py-12 text-base md:text-2xl font-bold text-white"
+>
+  Recent transactions
+</p>
 
-    <div class='overflow-x-scroll w-12/12 mx-auto md:mx-0 md:w-full'>
+<div class="overflow-x-scroll w-12/12 mx-auto md:mx-0 md:w-full">
+  [/ if (transactions.length) { /]
 
-[/ if (transactions.length) { /]
+  <table class="border border-gray-600 w-full">
+    <tr class="text-center text-lg text-white bg-black font-bold">
+      <th class="py-6">Date</th>
+      <th>Transaction ID</th>
+      <th>Amount</th>
 
-<table class='border border-gray-600 w-full '>
-            <tr class='text-center text-lg text-white  font-bold'>
-                <th class='py-6'>
-                    Date
-                </th>
-                <th>
-                    Transaction ID
-                </th>
-                <th>
-                    Amount
-                </th>
+      <th>Details</th>
+    </tr>
 
-                <th>
-                    Details
-                </th>
-            </tr>
+    [/ transactions.map((t)=>{ /]
 
+    <tr
+      class="text-center hover:bg-gray-200 cursor-pointer text-base text-black bg-gray-100"
+    >
+      <td class="py-4 px-2">[/= t.date.toLocaleString() /]</td>
+      <td class="px-2">[/=t.ref/]</td>
+      <td class="px-2">$/BTC [/=t.amount/]</td>
+      <td class="text-sm overflow-x-scroll px-2">[/=t.details/]</td>
+    </tr>
 
-[/ transactions.map((t)=>{ /]
+    [/ }) /]
+  </table>
+  [/ } else { /]
 
-            <tr
-                class='text-center  hover:bg-gray-200 cursor-pointer text-base text-black bg-gray-100'>
-                <td class="py-4 px-2"> [/= t.date.toLocaleString() /] </td>
-                <td class='px-2 '> [/=t.ref/] </td>
-                <td class='px-2'> $/BTC [/=t.amount/] </td>
-                <td class='text-sm overflow-x-scroll px-2 '> [/=t.details/] </td>
-            </tr>
+  <p class="py-8 w-full bg-white text-center text-lg">No recent transactions</p>
 
-            [/ }) /]
-
-
-
-        </table>
-[/ } else { /]
-
-<p class='py-8 w-full bg-white text-center text-lg'> No recent transactions </p>
-
-
-
-[/ } /]
-
-    </div>
+  [/ } /]
+</div>

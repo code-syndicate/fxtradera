@@ -108,7 +108,7 @@
                    class='bi-x text-xl absolute top-0 right-0 p-2 inline-block bg-gray-100 hover:bg-gray-300 text-black  cursor-pointer rounded-tr '></i>
 
                 <br /><br />
-                <p class='ml-4 text-left text-xl text-yellow-500 '> [/= textToShow/] </p>
+                <p class='ml-4 text-left text-xl text-blue-500 '> [/= textToShow/] </p>
 
             </div>
 
@@ -120,11 +120,14 @@
 
         <div class='relative'>
 
-            <img src='/img/bg.jpg'
+            <img src='/img/q1.jpg'
                  class='object-cover w-screen md:w-full h-64 md:h-96 '
                  width='1000'
                  height='500'
                  alt='bg' />
+
+
+               
 
 
             <!-- Conditional Template Inclusion  -->
@@ -192,7 +195,7 @@
 
         </div>
 
-        <main class='  md:mx-4 md:my-16'>
+        <main style="background-image: url('/img/q8.jpg');background-position: center;background-repeat: no-repeat;background-attachment: scroll;" class='  md:mx-4 md:my-16'>
 
             <div
                  class='flex flex-col md:flex-row items-center justify-center md:justify-around md:space-x-8 '>
@@ -222,7 +225,7 @@
                                class='py-4 hover:bg-gray-300  capitalize block w-full text-left text-xl px-6
 
                                [/ if (templateType==="dashboard") { /]
-                               bg-yellow-500 text-white
+                               bg-blue-500 text-white
                                [/}/]
 
                                '>
@@ -236,7 +239,7 @@
                                class='py-4 hover:bg-gray-300 capitalize block w-full text-left text-xl px-6
 
                                                             [/ if (templateType==="transactions") { /]
-                                                           bg-yellow-500 text-white
+                                                           bg-blue-500 text-white
                                                            [/}/]
 
                                                            '>
@@ -248,7 +251,7 @@
                                class='py-4 hover:bg-gray-300 capitalize block w-full text-left text-xl px-6
 
                                 [/ if (templateType==="deposits") { /]
-                               bg-yellow-500 text-white
+                               bg-blue-500 text-white
                                [/}/]
 
                                '>
@@ -258,7 +261,7 @@
                                class='py-4 hover:bg-gray-300 capitalize block w-full text-left text-xl px-6
 
                                 [/ if (templateType==="withdrawals") { /]
-                               bg-yellow-500 text-white
+                               bg-blue-500 text-white
                                [/}/]
                                '>
                                 <i class='bi-download text-xl px-2'></i>
@@ -266,7 +269,7 @@
                             </a><a href="[/=appUrl/]/?component_ref=notifications"
                                class='py-4 hover:bg-gray-300 capitalize block w-full text-left text-xl px-6
                                 [/ if (templateType==="notifications") { /]
-                               bg-yellow-500 text-white
+                               bg-blue-500 text-white
                                [/}/]
 
                                '>
@@ -277,7 +280,7 @@
                                class='py-4 hover:bg-gray-300 capitalize block w-full text-left text-xl px-6
 
                                 [/ if (templateType==="settings") { /]
-                               bg-yellow-500 text-white
+                               bg-blue-500 text-white
                                [/}/]
                                '>
                                 <i class='bi-sliders text-xl px-2'></i>
@@ -322,7 +325,7 @@
                                    class='bi-bell hidden md:inline-block text-xl inline-block px-3 py-2 bg-gray-700 text-white rounded-full'></i>
                                 </a>
                                 <span
-                                      class='bg-yellow-500  hidden md:inline-block text-sm absolute bottom-9 right-1 text-white rounded-full px-2'>
+                                      class='bg-blue-500  hidden md:inline-block text-sm absolute bottom-9 right-1 text-white rounded-full px-2'>
                                     [/= notificationCount > 0 ? notificationCount : null /] </span>
                             </div>
                             &nbsp;&nbsp;&nbsp;
@@ -415,33 +418,7 @@
                     </div>
                     [/}/]
                     
-           
-           <br/>
-           <br/>
-<div class="tradingview-widget-container">
-  <div id="tradingview_3c6b2"></div>
-  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/BTCUSDT/?exchange=BINANCE" rel="noopener" target="_blank"><span class="blue-text">BTCUSDT Chart</span></a> by TradingView</div>
-  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-  <script type="text/javascript">
-  new TradingView.widget(
-  {
-  "width": '100%',
-  "height": 610,
-  "symbol": "BINANCE:BTCUSDT",
-  "interval": "D",
-  "timezone": "Etc/UTC",
-  "theme": "dark",
-  "style": "1",
-  "locale": "en",
-  "toolbar_bg": "#f1f3f6",
-  "enable_publishing": false,
-  "allow_symbol_change": true,
-  "container_id": "tradingview_3c6b2"
-}
-  );
-  </script>
-</div>
-
+      
 
                     [/ if ( templateType === 'dashboard'){ /]
                     [/- include('__tx_logs__.ejs'); /]
@@ -472,6 +449,37 @@
                     [/ if (templateType === 'settings'){ /]
                     [/- include('__settings__.ejs'); /]
                     [/ } /]
+
+
+                         
+           <br/>
+           <br/>
+
+           
+<div class="tradingview-widget-container">
+  <div id="tradingview_3c6b2"></div>
+  <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/BTCUSDT/?exchange=BINANCE" rel="noopener" target="_blank"><span class="blue-text">BTCUSDT Chart</span></a> by TradingView</div>
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+  <script type="text/javascript">
+  new TradingView.widget(
+  {
+  "width": '100%',
+  "height": 610,
+  "symbol": "BINANCE:BTCUSDT",
+  "interval": "D",
+  "timezone": "Etc/UTC",
+  "theme": "dark",
+  "style": "1",
+  "locale": "en",
+  "toolbar_bg": "#f1f3f6",
+  "enable_publishing": false,
+  "allow_symbol_change": true,
+  "container_id": "tradingview_3c6b2"
+}
+  );
+  </script>
+</div>
+
 
                 </div>
 
