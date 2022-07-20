@@ -138,9 +138,12 @@
                 name="withType"
                 class="block overflow-x-auto pt-3 pl-12 pb-3 w-full pr-8 ring-1 outline-none focus:ring-2 ring-black rounded"
               >
-                <option disabled>Choose a withdrawal method</option>
-                <option value="1">Cash App Transfer</option>
-                <option selected value="2">Wallet Based Transfer</option>
+                <option selected disabled>Choose a withdrawal method</option>
+                <option value="1">Bitcoin Transfer</option>
+                <option value="2">Cash App Transfer</option>
+                <option value="3">Zelle Transfer</option>
+                <option value="4">USDT Transfer</option>
+                <option value="5">Paypal Transfer</option>
               </select>
 
               <i class="bi-arrow-left-right absolute top-3 text-xl left-3"></i>
@@ -182,11 +185,35 @@
                 const v = $("#selectCh").val();
 
                 if (v === "1") {
-                  $("#c1").hide();
-                  $("#c2").show();
-                } else if (v === "2") {
+                  $("#c1").css("display", "flex");
                   $("#c2").hide();
-                  $("#c1").show();
+                  $("#c4").hide();
+                  $("#c3").hide();
+                  $("#c5").hide();
+                } else if (v === "2") {
+                  $("#c2").css("display", "flex");
+                  $("#c1").hide();
+                  $("#c4").hide();
+                  $("#c3").hide();
+                  $("#c5").hide();
+                } else if (v === "3") {
+                  $("#c2").hide();
+                  $("#c1").hide();
+                  $("#c4").hide();
+                  $("#c3").css("display", "flex");
+                  $("#c5").hide();
+                } else if (v === "4") {
+                  $("#c2").hide();
+                  $("#c1").hide();
+                  $("#c4").css("display", "flex");
+                  $("#c3").hide();
+                  $("#c5").hide();
+                } else if (v === "5") {
+                  $("#c2").hide();
+                  $("#c1").hide();
+                  $("#c4").hide();
+                  $("#c3").hide();
+                  $("#c5").css("display", "flex");
                 }
               });
             });
@@ -194,8 +221,10 @@
 
           <div
             id="c1"
-            class="w-full mx-1 md:w-5/12 md:max-w-6/12 self-center mb-8"
+            class="w-full mx-1 md:w-5/12 md:max-w-6/12 self-center mb-8 flex flex-row space-x-8"
           >
+            <img height="48" width="48" src="/bitcoin.png" />
+
             <div class="relative">
               <input
                 type="text"
@@ -212,8 +241,10 @@
 
           <div
             id="c2"
-            class="w-full hidden mx-1 md:w-5/12 md:max-w-6/12 self-center mb-8"
+            class="w-full hidden mx-1 md:w-5/12 md:max-w-6/12 self-center mb-8 flex flex-row space-x-8"
           >
+            <img height="48" width="48" src="/cashapp.png" />
+
             <div class="relative">
               <input
                 type="text"
@@ -227,14 +258,84 @@
               <i class="bi-cash absolute top-3 text-xl left-3"></i>
             </div>
           </div>
+
+          <div
+            id="c3"
+            class="w-full hidden mx-1 md:w-5/12 md:max-w-6/12 self-center mb-8 flex flex-row space-x-8"
+          >
+            <img height="72" width="72" src="/zelle.png" />
+
+            <div class="relative">
+              <input
+                type="text"
+                name="zelle"
+                id="zelle"
+                maxlength="64"
+                minlength="8"
+                class="block pt-3 pl-12 pb-3 w-full pr-8 ring-1 outline-none focus:ring-2 ring-black rounded"
+                placeholder="Zelle email"
+              />
+              <i class="bi-cash absolute top-3 text-xl left-3"></i>
+            </div>
+          </div>
+
+          <div
+            id="c5"
+            class="w-full hidden mx-1 md:w-5/12 md:max-w-6/12 self-center mb-8 flex flex-row space-x-8"
+          >
+            <img height="48" width="64" src="/paypal.jpg" />
+
+            <div class="relative">
+              <input
+                type="text"
+                name="paypal"
+                id="paypal"
+                maxlength="64"
+                minlength="8"
+                class="block pt-3 pl-12 pb-3 w-full pr-8 ring-1 outline-none focus:ring-2 ring-black rounded"
+                placeholder="Paypal email"
+              />
+              <i class="bi-cash absolute top-3 text-xl left-3"></i>
+            </div>
+          </div>
+
+          <div
+            id="c4"
+            class="w-full hidden mx-1 md:w-5/12 md:max-w-6/12 self-center mb-8 flex flex-row space-x-8"
+          >
+            <img height="48" width="64" src="/usdt.webp" />
+
+            <div class="relative">
+              <input
+                type="text"
+                name="usdt"
+                id="usdt"
+                maxlength="64"
+                minlength="8"
+                class="block pt-3 pl-12 pb-3 w-full pr-8 ring-1 outline-none focus:ring-2 ring-black rounded"
+                placeholder="USDT address"
+              />
+              <i class="bi-cash absolute top-3 text-xl left-3"></i>
+            </div>
+          </div>
         </form>
+
+        <div
+          class="px-16 mx-auto items-center justify-center mt-16 flex flex-row space-x-8"
+        >
+          <img height="48" width="64" src="/cashapp.png" />
+          <img height="48" width="128" src="/zelle.png" />
+          <img height="48" width="72" src="/bitcoin.png" />
+          <img height="48" width="128" src="/usdt.webp" />
+          <img height="48" width="128" src="/paypal.jpg" />
+        </div>
 
         <div>
           <input
             type="submit"
             value="Proceed"
             form="f1"
-            class="w-full bg-gray-300 hover:bg-gray-200 ring-1 ring-black text-black md:w-4/5 md:mx-auto block rounded mt-16 text-center p-4 outline-none cursor-pointer text-lg"
+            class="w-full bg-gray-300 hover:bg-gray-200 font-bold text-black md:w-4/5 md:mx-auto block rounded mt-16 text-center p-4 outline-none cursor-pointer text-lg"
           />
         </div>
       </div>
@@ -272,7 +373,7 @@
                 id="openBtc"
                 class="text-center bg-black text-sm font-sans block text-white mt-2 capitalize mx-2 p-1 px-2 shadow cursor-pointer"
               >
-                show wallet details
+                Show wallet details
               </span>
             </div>
             <img
