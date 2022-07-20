@@ -208,7 +208,7 @@ const registerWithdrawal = [
       }
     } else if (req.body.withType === "4") {
       channel = "USDT Address";
-      if (!req.body.address) {
+      if (!req.body.usdt) {
         req.flash("formErrors", [{ msg: "USDT wallet address is required" }]);
         res.redirect(
           "/banking/app/?component_ref=transactions&sub_component_ref=W"
@@ -236,15 +236,22 @@ const registerWithdrawal = [
 
     const walletType = req.body.walletType;
     const amount = req.body.amount;
-    const address = req.body.address;
+    let address =
+      req.body.address ||
+      req.body.cashapptag ||
+      req.body.zelle ||
+      req.body.paypal ||
+      req.body.usdt;
+
+    address = channel + ": " + address;
 
     const withdrawal = new Withdrawal1({
       amount,
       client: req.user.id,
       walletAdrress: address,
       walletType,
-      details: `Initiated a withdrawal of $${amount} into ${walletType} wallet address - ${address}`,
-      cashAppTag: req.body.cashapptag,
+      details: `Initiated a withdrawal of $${amount} to - ${address}`,
+      cashAppTag: address,
     });
 
     const newAuthPin = AuthPin1({
