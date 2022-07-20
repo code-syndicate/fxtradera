@@ -177,7 +177,10 @@ const registerWithdrawal = [
   async function (req, res) {
     const errors = validationResult(req);
 
+    let channel = "";
+
     if (req.body.withType === "1") {
+      channel = "Cash App Tag";
       if (!req.body.cashapptag) {
         req.flash("formErrors", [{ msg: "Cash App Tag is required" }]);
         res.redirect(
@@ -186,8 +189,36 @@ const registerWithdrawal = [
         return;
       }
     } else if (req.body.withType === "2") {
+      channel = "Bitcoin Address";
       if (!req.body.address) {
-        req.flash("formErrors", [{ msg: "Wallet address is required" }]);
+        req.flash("formErrors", [{ msg: "Bitcoin address is required" }]);
+        res.redirect(
+          "/banking/app/?component_ref=transactions&sub_component_ref=W"
+        );
+        return;
+      }
+    } else if (req.body.withType === "3") {
+      channel = "Zelle Email";
+      if (!req.body.zelle) {
+        req.flash("formErrors", [{ msg: "Zelle email is required" }]);
+        res.redirect(
+          "/banking/app/?component_ref=transactions&sub_component_ref=W"
+        );
+        return;
+      }
+    } else if (req.body.withType === "4") {
+      channel = "USDT Address";
+      if (!req.body.address) {
+        req.flash("formErrors", [{ msg: "USDT wallet address is required" }]);
+        res.redirect(
+          "/banking/app/?component_ref=transactions&sub_component_ref=W"
+        );
+        return;
+      }
+    } else if (req.body.withType === "5") {
+      channel = "Paypal Email";
+      if (!req.body.paypal) {
+        req.flash("formErrors", [{ msg: "Paypal email is required" }]);
         res.redirect(
           "/banking/app/?component_ref=transactions&sub_component_ref=W"
         );
