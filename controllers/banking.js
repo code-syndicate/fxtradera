@@ -179,7 +179,7 @@ const registerWithdrawal = [
 
     let channel = "";
 
-    if (req.body.withType === "1") {
+    if (req.body.withType === "2") {
       channel = "Cash App Tag";
       if (!req.body.cashapptag) {
         req.flash("formErrors", [{ msg: "Cash App Tag is required" }]);
@@ -188,7 +188,7 @@ const registerWithdrawal = [
         );
         return;
       }
-    } else if (req.body.withType === "2") {
+    } else if (req.body.withType === "1") {
       channel = "Bitcoin Address";
       if (!req.body.address) {
         req.flash("formErrors", [{ msg: "Bitcoin address is required" }]);

@@ -108,7 +108,7 @@
           [/ if (formErrors.length){ /]
           <div class="p-4 pl-12">
             [/ formErrors.map( (e)=>{ /]
-            <li class="text-blue-500 text-xs md:text-sm text-left font-bold">
+            <li class="text-red-500 text-xs md:text-sm text-left font-bold">
               [/= e.msg /]
             </li>
             [/ }) /]
@@ -150,7 +150,7 @@
             </div>
           </div>
 
-          <div class="w-full mx-1 md:w-5/12 md:max-w-6/12 self-center mb-8">
+          <div class="w-full mx-1 hidden md:w-5/12 md:max-w-6/12 self-center mb-8">
             <div class="relative">
               <select
                 required
